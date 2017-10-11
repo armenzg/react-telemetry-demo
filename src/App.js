@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+// Even if it does not get used. It takes preference over
+// <script> tags in index.html
+// eslint-disable-next-line
+import MG from 'metrics-graphics';
 
 const plot = {
   "channel": "nightly",
