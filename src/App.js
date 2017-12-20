@@ -1,35 +1,35 @@
 import React, { Component } from 'react';
-
-const plot = {
-  "channel": "nightly",
-  "version": "",
-  "metric": "FX_NEW_WINDOW_MS",
-  "useSubmissionDate": false,
-  "sanitize": true,
-  "trim": true,
-  "compare": "",
-  "sensibleCompare": true,
-  "evoVersions": "3",
-  "filters": {
-    "application": "Firefox"
-  }
-};
-
-const node = 'winOpen';
+import MG from 'metrics-graphics';
+import MetricsGraphics from 'react-metrics-graphics';
 
 class App extends Component {
-  componentDidMount() {
-    window.TelemetryWrapper.go(plot, document.getElementById(node));
+  state = {
+    series: undefined,
+  }
+
+  async componentDidMount() {
+    const data = await (
+      await fetch('https://health-quantum-dashboard.herokuapp.com/api/perf/benchmark/speedometer?channel=nightly&architecture=64')
+    ).json();
+    data.series.map(evo => MG.convert.date(evo, 'date'));
+    this.setState({
+      labels: data.legendLabels,
+      series: data.series,
+    });
   }
 
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React Telemetry demo</h1>
-          <div id={node}></div>
-        </header>
-      </div>
+    return (this.state.series ?
+      <MetricsGraphics
+        title='Hello title!'
+        data={this.state.series}
+        legend={this.state.labels}
+        x_accessor='date'
+        y_accessor='value'
+        full_width
+        full_height
+      />
+      : null
     );
   }
 }

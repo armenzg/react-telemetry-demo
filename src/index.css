@@ -3,3 +3,10 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.metricsGraphicsCon {
+  min-height: 250px; /* Otherwise we get a div too small to draw */
+}
+.mg-line-legend {
+  visibility: hidden; /* Because the legend is outside of the visible area */
+}
